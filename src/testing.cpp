@@ -44,6 +44,15 @@ void TestCase::dump (){
          << "Total Case:" << mTestFunctions.size () << "\n"
          << "\n"
          << endl;
+
+    auto item = mTestFunctions.begin ();
+    while( item != mTestFunctions.end () ){
+        auto name = item->first;
+        cout << "=>" << name << endl;
+
+        item++;
+    }
+
 }
 
 /*
