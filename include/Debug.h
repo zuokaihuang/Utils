@@ -4,7 +4,7 @@
 #include <iostream>
 
 // log to stdout/stderr
-std::ostream& print(std::ostream& os){
+static std::ostream& print(std::ostream& os){
     return os;
 }
 

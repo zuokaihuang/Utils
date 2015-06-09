@@ -22,9 +22,9 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("Tree");
 //    testcase.runTestCase ("MemoryPool");
 //    testcase.runTestCase ("Sigleton");
-//    testcase.runTestCase ("Buffer");
+    testcase.runTestCase ("Buffer");
 //    testcase.runTestCase ("Debug");
-    testcase.runTestCase ("SafeQueue");
+//    testcase.runTestCase ("SafeQueue");
 
     cout << "All Done." << endl;
 
