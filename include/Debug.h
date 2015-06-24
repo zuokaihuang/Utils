@@ -19,12 +19,12 @@ std::ostream& print(std::ostream& os, T&& t, U&& u, Args&&... args){
 }
 
 template <typename...Args>
-void __DLog(Args&&...args){
-    print(std::cout, std::forward<Args>(args)...) << std::endl;
+std::ostream& __DLog(Args&&...args){
+    return print(std::cout, std::forward<Args>(args)...) << std::endl;
 }
 
 template <typename...Args>
-void __ELog(Args&&...args){
+std::ostream& __ELog(Args&&...args){
     print(std::cerr, std::forward<Args>(args)...) << std::endl;
 }
 

@@ -29,7 +29,9 @@ mutex &get_log_file_mutex(){
     return mtx;
 }
 
+
 #ifdef ENABLE_TESTCASE
+
 
 #include <thread>
 #include <testing.h>
@@ -41,7 +43,10 @@ TESTCASE_START
         cout << "Go Testing" << __FILE__ << endl;
 
         DLog(1, 1.1, "Hello", (int*)0x0, 1.2f, 1==1, string("你好"));
+        DLog("hello") << "---<<<<world\n" ;
+
         ELog(1, 22, "error");
+
 
         DebugLogToFileOpen("/tmp/hello");
         FLog(  111, 222);

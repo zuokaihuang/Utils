@@ -1,13 +1,17 @@
 #ifndef SIGLETON_H
 #define SIGLETON_H
 
+#include <mutex>
+
+
+
 template <typename T>
 T& Sigleton(){
     static T instance;
     return instance;
 }
 
-#include <mutex>
+
 static std::mutex __mutex__sigletonptr__;
 template <typename T>
 T* SigletonPtr(){
