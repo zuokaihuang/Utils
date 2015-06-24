@@ -9,21 +9,8 @@ using namespace std;
 #define REVERSION "0.0"
 #endif
 
-typedef struct OP{
-    void operator() () {
-        std::cout << "functor\n";
-    }
-    int operator [](int idx){
-        return 100;
-    }
-}OP;
-
 int main(int argc, char *argv[])
 {
-    OP tb;
-    tb();
-    cout << tb[123] << endl;
-    return 0;
     clock_t start = clock ();
     TestCase& testcase = Sigleton<TestCase>();
 //    testcase.dump ();
@@ -38,7 +25,7 @@ int main(int argc, char *argv[])
 //        testcase.runTestCase ("SafeQueue");
 //    testcase.runTestCase ("MessageQueue");
 //    testcase.runTestCase ("URI");
-    testcase.runTestCase ("HTTP");
+    testcase.runTestCase ("HttpC");
 
 
     clock_t end = clock();

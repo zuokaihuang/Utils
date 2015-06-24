@@ -4,12 +4,52 @@
 #include <sstream>
 #include <vector>
 #include <iostream>
+#include <assert.h>
 using namespace std;
 
-URI::URI(std::string uri)
+typedef
+struct _tagSchema{
+    const char* prefix;
+    const size_t size;
+}Schema_t;
+
+static
+Schema_t schema_list[]={
+    {"http://", 7},
+    {"https://", 8},
+    {NULL, 0}
+};
+
+
+static
+int url_start_with(const char*a, const char* b){
+    if( a!=NULL && b!=NULL && strncasecmp (a, b, strlen(a) ) == 0) {
+        return 0;
+    }
+    return 1;
+}
+
+static
+char* url_remove_schema_prefix(const char* url){
+    if (!url) return NULL;
+
+    int i = 0;
+    Schema_t* sch = &schema_list[i];
+    do{
+        sch = &schema_list[i];
+        if ( NULL == sch->prefix ) break;
+        if ( url_start_with (sch->prefix, url) == 0 ){
+            return strdup ( url + sch->size );
+        }
+        i++;
+    }while( NULL != sch->prefix );
+
+    return NULL;
+}
+
+
+URI::URI()
 {
-    origin = uri;
-    parse();
 }
 
 URI::~URI()
@@ -17,96 +57,172 @@ URI::~URI()
 
 }
 
-void URI::parse (){
-    //    char* sche = checkScheme(origin.c_str (), origin.size () );
-    //    cout << "scheme:" << sche << endl;
-    char* pat = checkPath(origin.c_str (), origin.size () );
-//    cout << "path:" << pat << endl;
+void URI::parse (const char *url){
+    std::string uri(url);
+    parse (uri);
 }
 
-char *URI::checkScheme(const char* uri, const size_t size){
-    char *delim = "://";
-    char *p, *mark , *str;
-    mark = str = strdup(uri);
-    p = strtok(str, delim);
-    if (p){
-        p = strdup(p);
+void URI::parse (std::string& uri){
+    if (uri.size () == 0){
+        assert(!"URI is empty");
     }
-    free(mark);
-    return p;
-}
+    m_origin = uri;
 
-void split( std::vector<std::string>& stringVector,
-            const std::string & str,
-            const std::vector<std::string>& delims){
-    size_t  start = 0, end = 0;
+    schema = nullptr;
+    host   = nullptr;
+    port   = 0;
+    path   = nullptr;
+    query  = nullptr;
 
-    int delims_idx = 0;
-    while ( end != string::npos)
-    {
-        int idx = (++delims_idx) > delims.size () ? delims.size () -1 : delims_idx;
-        string delim = delims[ idx ];
-        end = str.find( delim, start);
-
-        // If at end, use length=maxLength.  Else use length=end-start.
-        stringVector.push_back( str.substr( start,
-                       (end == string::npos) ? string::npos : end - start));
-
-        // If at end, use start=maxSize.  Else use start=end+delimiter.
-        start = (   ( end > (string::npos - delim.size()) )
-                  ?  string::npos  :  end + delim.size());
+    url_get_schema ();
+    if ( isHttp () ){
+        url_get_host ();
+        url_get_port ();
+        url_get_path ();
+    }else if ( isFile () ){
+        url_get_file_path();
+    }else{
+        assert(!"Not support such uri");
     }
 }
 
-char* URI::checkPath (const char *uri, const size_t size){
-    using namespace std;
-    string str(uri);
-    cout << str << endl;
 
-    string::size_type cur_pos ,next;
-    cur_pos = 0;
-    do{
-        next = str.find_first_of ("://", cur_pos);
-        if  (next == string::npos) break;
-        if (next < str.size ()){
-            cout << "scheme:" << str.substr (0, next)<< endl;
-            cur_pos += next+3;
+void URI::url_get_schema (){
+    const char* url = m_origin.c_str ();
+    char* sch = strchr (url, ':');
+    if (sch && sch[1] == '/' && sch[2] == '/'){
+        size_t sz = sch - url;
+        char* schema = (char*) calloc(1, sz);
+        strncpy (schema, url, sz);
+        this->schema = schema;
+        return;
+    }
+    this->schema = NULL;
+}
+void URI::url_get_host (){
+    const char* url = m_origin.c_str ();
+    char* no_http_prefix = url_remove_schema_prefix (url);
+    if (!no_http_prefix) return;
+    char* offset_slash = NULL;
+    char* offset_colon = NULL;
+    int len = 0;
+
+    char* the_host = NULL;
+
+    offset_slash = strstr (no_http_prefix, "/");
+    offset_colon = strstr (no_http_prefix, ":");
+
+    // no slash and no colon
+    if ( !offset_slash && !offset_colon ){
+        the_host = strdup (no_http_prefix);
+    }
+
+    if (offset_colon){
+        // with colon
+        len = offset_colon - no_http_prefix;
+    }else if (offset_slash ){
+        // with slash and without colon
+        len = offset_slash - no_http_prefix;
+    }
+    if (len != 0){
+        the_host = (char*) calloc(1, len+1);
+        memcpy( the_host, no_http_prefix , len);
+        the_host[len] = '\0';
+    }
+    free( no_http_prefix);
+    no_http_prefix = NULL;
+
+    this->host = the_host;
+}
+void URI::url_get_port (){
+    const char* url = m_origin.c_str ();
+    char* no_http_prefix = url_remove_schema_prefix (url);
+    if (!no_http_prefix) return;
+    char* offset_slash = NULL;
+    char* offset_colon = NULL;
+    int len = 0;
+    if ( (offset_colon = strchr (no_http_prefix, ':') ) != NULL){
+        offset_slash = strchr (no_http_prefix, '/') ;
+        if (offset_slash){
+            len = offset_slash - offset_colon;
+        }else{
+            len = no_http_prefix + strlen(no_http_prefix) - offset_colon;
         }
 
-        next = str.find_first_of ("/", cur_pos);
-        if  (next == string::npos) break;
-        if (next < str.size ()){
-            string::size_type tmp_pos = cur_pos, tmp_next = next;
+        char* tmp = (char*) calloc(1, len);
+        memcpy( tmp, offset_colon+1, len-1); // exclude ":" & "/"
+        tmp[len-1] = '\0';
 
-            bool flag = false;
-            tmp_next = str.find_first_of (":", tmp_pos);
-            if (tmp_next < str.size ()){
-                cout << "port:" << str.substr (tmp_next+1, next - tmp_next-1) << endl;
-                flag = true;
-            }
-            if (flag){
-                // with port
-                cout << "path case 1:" << str.substr (cur_pos, next-cur_pos-3)<< endl;
-                cur_pos = next;
-            }else{
-                // without port
-                cout << "path case 2:" << str.substr (cur_pos, next-cur_pos)<< endl;
-                cur_pos = next;
-            }
+        int port = atoi(tmp);
+        free( tmp);
+        free( no_http_prefix);
+        this->port = port;// == 0 ? 80 : port;
+        return;
+    }
+    free( no_http_prefix);
+
+    this->port = 80;
+}
+void URI::url_get_path (){
+    const char* url = m_origin.c_str ();
+    size_t offset = 0;
+
+    offset += this->schema != NULL? strlen ( this->schema ) + 3 : 0;
+    offset += this->host != NULL? strlen ( this->host ) : 0;
+
+    char* chr = strchr ((url+offset), '/');
+    if (chr){
+        char* tmp_query = strchr(chr, '?');
+        if ( !tmp_query ){ // not exit query
+            this->path = strdup(chr);
+        }else{
+            offset = tmp_query - chr;
+            this->path = (char*) calloc(1, offset+1);
+            strncpy(this->path, chr, offset);
+
+            this->query = strdup (tmp_query+1);
         }
+    } else {
+        this->path = strdup("/");
+    }
+}
 
-        next = str.find_first_of ("/", cur_pos);
-        if  (next == string::npos) break;
-        if (next < str.size ()){
-            cout << "query:" << str.substr (next+1, string::npos)<< endl;
-            cur_pos= next;
-        }
+void URI::url_get_file_path(){
+    const char* url = m_origin.c_str ();
+    size_t offset = 0;
 
-        return "";
-    }while(0);
+    offset += this->schema != NULL? strlen ( this->schema ) + 3 : 0;
+    char* chr = strchr ((url+offset), '/');
+    if (chr)
+        this->path = strdup(chr);
+    else
+        this->path = strdup("/");
+}
 
-    cout << "parsing error" << endl;
-    return "";
+void URI::dump (){
+    cout << "schema:" << (schema != NULL ? schema : "<nullptr>") << "\n";
+    cout << "host:" << (host != NULL ? host : "<nullptr>") << "\n";
+    cout << "port:" << (port                          ) << "\n";
+    cout << "path:" << (path != NULL ? path : "<nullptr>") << "\n";
+    cout << "query:" << (query != NULL ? query : "<nullptr>") << "\n";
+    cout << endl;
+}
+
+bool URI::isHttp(){
+    if (strstr(schema, "http")){
+        return true;
+    }
+    return false;
+}
+bool URI::isFile (){
+    if (strstr(schema, "file")){
+        return true;
+    }
+    return false;
+}
+
+bool URI::valid (){
+    return isHttp() || isFile ();
 }
 
 
@@ -120,11 +236,18 @@ TESTCASE_START
     testcase.addTestCase ("URI", [](void* arg){
         cout << "Go Testing" << __FILE__ << endl;
 
-        URI url("http://www.baidu.com:80/query?hello=ppp");
-
+        URI url;
+        url.parse ("http://www.baidu.com:80/q/s/query.php?hello=ppp");
+        cout << "parse ok?=>" << url.valid () << endl;
+        url.dump ();
         cout << "=============" << endl;
 
-        URI url2("file:/-/www.qq.com");
+        URI url2;
+        url2.parse ("file:///tmp/afile");
+
+        cout << "parse ok?=>" << url2.valid () << endl;
+        url2.dump ();
+        cout << "=============" << endl;
 
         return 0;
     }, arg );

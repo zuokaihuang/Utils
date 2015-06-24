@@ -1,8 +1,6 @@
 #ifndef URI_H
 #define URI_H
 
-#include <testing.h>
-
 #include <string>
 /*
  * RFC 2396
@@ -12,18 +10,30 @@
 class URI
 {
 public:
-    URI(std::string uri);
+    URI();
     ~URI();
 
-    std::string origin;
-    std::string scheme;
-    std::string path;
-    std::string query;
+    void parse(const char* url);
+    void parse(std::string &url);
+    bool valid();
+    bool isHttp();
+    bool isFile();
 
+    void dump();
 private:
-    void parse();
-    static char* checkScheme(const char *uri, const size_t size);
-    static char* checkPath(const char *uri, const size_t size);
+    void url_get_schema();
+    void url_get_host();
+    void url_get_port();
+    void url_get_path();
+
+    void url_get_file_path();
+public:
+    std::string m_origin;
+    char*   schema;
+    char*   host;
+    int     port;
+    char*   path;
+    char*   query;
 };
 
 std::ostream& operator<<(std::ostream& out, const URI& url);
