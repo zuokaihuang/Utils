@@ -15,6 +15,8 @@ public:
 
     void setUserAgent(const char* ua);
 
+    void teardown();
+
     int head(std::string& url);
     int get(std::string& url);
 
@@ -24,8 +26,10 @@ public:
     size_t getContentLength();
     int  getStateCode();
 
-    void setWriteToFile(bool enable);
-    const char* getWritedFile();
+    void setWriteToFileTag(const char* tag);
+    void setWriteToFile(bool enable, bool auto_delete);
+    const char* getWritedFilePath();
+    const char* getHeader();
 
 private:
     void parseHeader();
@@ -43,9 +47,11 @@ private:
     char* m_pHeader;
     char* m_pContent;
 
-    const char* m_WriteFileName;
+    char* m_WriteFileName;
     bool  m_bWriteToFile;
     int   m_iWriteToFileFd;
+    bool  m_bAutoDelete;
+    char* m_WriteToFileTag;
     //
     int m_contentLength;
     int m_stateCode;

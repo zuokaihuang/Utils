@@ -10,27 +10,28 @@
 HttpC::HttpC()
 {
     m_userAgent = NULL;
-        m_pSocket = new Socket(Socket::Socket_tcp);
-        m_httpOnReadSize = 8192;
-        m_BufferInitSize = 16*1024*1024;
-        m_BufferSize = m_BufferInitSize;
-        m_bWriteToFile = false;
+    m_pSocket = new Socket(Socket::Socket_tcp);
+    m_httpOnReadSize = 8192;
+    m_BufferInitSize = 16*1024*1024;
+    m_BufferSize = m_BufferInitSize;
+    m_bWriteToFile = false;
 
-        m_pHeader = NULL;
-        m_pContent = NULL;
-        m_pBuffer = (char*)malloc(m_BufferSize);
+    m_pHeader = NULL;
+    m_pContent = NULL;
+    m_pBuffer = (char*)malloc(m_BufferSize);
+    m_WriteFileName = NULL;
 }
 
 HttpC::~HttpC()
 {
     if ( m_userAgent != NULL ){
-            free(m_userAgent); m_userAgent = NULL;
-        }
+        free(m_userAgent); m_userAgent = NULL;
+    }
 }
 
 
 int HttpC::head (std::string& url){
-    m_httpReadedSize = 0;
+    teardown();
     int rs = 0;
 
     m_url.parse (url);
@@ -45,7 +46,6 @@ int HttpC::head (std::string& url){
             strlen(get_fmt_template);
     char* query_header = (char*) calloc (1, len);
     snprintf (query_header, len, get_fmt_template, m_url.path, m_url.host, USERAGENT);
-
 
     char* ip = NULL;
     if ( (ip = net_get_ip ( m_url.host )) == NULL ){
@@ -81,7 +81,7 @@ int HttpC::head (std::string& url){
 }
 
 int HttpC::get (std::string& url){
-    m_httpReadedSize = 0;
+    teardown();
     int rs = 0;
 
     m_url.parse (url);
@@ -139,7 +139,6 @@ void HttpC::onRead (const void *buffer, const size_t size){
         return;
     }
 
-
     // need realloc
     if ( m_httpReadedSize + size > m_BufferSize ){
         m_BufferSize = m_BufferSize + 4*1024*1014;
@@ -165,11 +164,18 @@ void HttpC::onRead (const void *buffer, const size_t size){
             if ( m_bWriteToFile == true){
                 if (m_iWriteToFileFd){ ::close(m_iWriteToFileFd);m_iWriteToFileFd=-1;}
                 if (m_WriteFileName) {m_WriteFileName = NULL;}
-                char temp[] = "/tmp/__httpc__file__XXXXXX";
-                m_WriteFileName = mktemp (temp);
+                char buffer[1024];
+                memset(buffer, 0, 1024);
+                if (m_WriteToFileTag != nullptr){
+                    snprintf (buffer, 1024,"/tmp/__httpc__%s_XXXXXX", m_WriteToFileTag);
+                }else{
+                    snprintf (buffer, 1024,"/tmp/__httpc__XXXXXX");
+                }
+                char* tmp_file = mktemp (buffer);
+                if (tmp_file) m_WriteFileName = strdup(tmp_file);
                 m_iWriteToFileFd = open(m_WriteFileName, O_RDWR|O_CREAT, 0777);
-
-                unlink (m_WriteFileName); // auto delete when app exit
+                if (m_bAutoDelete)
+                    unlink (m_WriteFileName); // auto delete when app exit
 
                 write(m_iWriteToFileFd, (char*)m_pBuffer+ m_HeaderOffset, m_httpReadedSize - m_HeaderOffset );
                 memset (m_pBuffer, 0x0, m_httpReadedSize - m_HeaderOffset);
@@ -217,6 +223,11 @@ void HttpC::onReadDone (){
     } else {
         m_pContent = (char*)m_pBuffer + m_HeaderOffset;
     }
+
+    if (m_WriteToFileTag) free(m_WriteToFileTag);
+    m_WriteToFileTag = nullptr;
+
+    m_pSocket->close();
 }
 
 char* HttpC::getContent (){
@@ -235,8 +246,30 @@ int HttpC::getStateCode (){
     return m_stateCode;
 }
 
-void HttpC::setWriteToFile (bool enable){
+void HttpC::setWriteToFileTag (const char *tag){
+    m_WriteToFileTag = strdup(tag);
+}
+
+void HttpC::setWriteToFile (bool enable, bool a){
     m_bWriteToFile = enable;
+    m_bAutoDelete = a;
+}
+
+const char* HttpC::getWritedFilePath (){
+    return m_WriteFileName;
+}
+
+const char* HttpC::getHeader (){
+    return m_pHeader;
+}
+
+void HttpC::teardown (){
+    m_httpReadedSize = 0;
+    memset (m_pBuffer, 0, m_BufferSize);
+    m_pHeader = nullptr;
+
+    if (m_WriteFileName) free(m_WriteFileName);
+    m_WriteFileName = nullptr;
 }
 
 #ifdef ENABLE_TESTCASE
@@ -254,7 +287,7 @@ TESTCASE_START
         HttpC http;
         std::string url = "http://m.baidu.com/?from=1002296a";
 
-        http.setWriteToFile (true);
+        http.setWriteToFile (true, true);
         http.get (url);
 
         cout << "http code:" << http.getStateCode () << endl;

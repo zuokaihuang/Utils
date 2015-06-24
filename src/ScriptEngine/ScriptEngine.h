@@ -341,6 +341,8 @@ public:
 
     lua_State* getLuaState ();
 
+    const char* getCurrentFullPath();
+
     void addSearchPath ( const char* path );
     const char* getSearchPath();
     int executeString (const char *code);
@@ -354,6 +356,7 @@ protected:
 protected:
     lua_State* m_pState;
     Table* m_pTableGlobal;
+    char* m_pCurrentPath;
 };
 
 #endif // SCRIPTENGINE_H

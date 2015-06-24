@@ -26,6 +26,10 @@ public:
     Socket(Socket_type m_type);
     ~Socket();
 
+    void close();
+private:
+    void create();
+public:
     int bind(int port);
     int connect(const char *ip, const int port); // only tcp
     Socket* accept();
@@ -37,6 +41,7 @@ public:
 
     int m_master_Socket;
     Socket_type m_type;
+
 };
 
 char* net_get_ip(const char* host);

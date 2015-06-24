@@ -73,6 +73,8 @@ static TestCaseEntry _TestCaseEntry([](){
 #ifdef ENABLE_TESTCASE
 
 #include <testing.h>
+#include <iostream>
+using namespace std;
 TESTCASE_START
 {
     void* arg = NULL;

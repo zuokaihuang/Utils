@@ -6,6 +6,7 @@ using namespace std;
 
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdlib.h>
 
 #define DLog(...) do{ fprintf( stdout, __VA_ARGS__ ); }while(0);
 #define DLogLuaError( msg ) DLog("[%s %d] [LUA ERROR] %s\n", __FILE__, __LINE__, msg );
@@ -18,6 +19,8 @@ ScriptEngine::ScriptEngine()
 ScriptEngine::~ScriptEngine()
 {
     lua_close (m_pState);
+    if (m_pCurrentPath) free(m_pCurrentPath);
+    m_pCurrentPath = nullptr;
 }
 
 
@@ -80,10 +83,20 @@ void ScriptEngine::init (){
     m_pState = luaL_newstate();
     luaL_openlibs (m_pState);
     m_pTableGlobal = new Table(m_pState, "", -1);
+
+    char current_folder[1024];
+    getcwd (current_folder, 1024);
+
+    m_pCurrentPath = strdup(current_folder);
+    this->addSearchPath (m_pCurrentPath);
 }
 
 Table* ScriptEngine::getGlobalTable (){
      return m_pTableGlobal;
+}
+
+const char* ScriptEngine::getCurrentFullPath (){
+    return m_pCurrentPath;
 }
 
 
@@ -141,5 +154,33 @@ Table* Table::createTable (const char* name, bool is_global){
     }
     return new Table(m_pState, name, new_ref);
 }
+
+#ifdef ENABLE_TESTCASE
+
+#include <testing.h>
+#include <iostream>
+using namespace std;
+TESTCASE_START
+{
+    void* arg = NULL;
+    TestCase& testcase = Sigleton<TestCase>();
+    testcase.addTestCase ("ScriptEngine", [](void* arg){
+        cout << "Go Testing" << __FILE__ << endl;
+        ScriptEngine se;
+
+        cout << se.getCurrentFullPath () << endl;
+        std::string searchPath(se.getCurrentFullPath ());
+        searchPath += string("/Asset/script");
+        se.addSearchPath ( searchPath.c_str () );
+
+        se.executeString ("require('main')");
+
+        return 0;
+    }, arg );
+}
+
+TESTCASE_END
+
+#endif // ENABLE_TESTCASE
 
 

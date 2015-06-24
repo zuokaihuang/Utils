@@ -15,23 +15,30 @@ using namespace std;
 
 Socket::Socket(Socket_type type){
     this->m_type = type;
-    if (type == Socket_udp){
+}
+
+Socket::~Socket(){
+    close();
+}
+
+void Socket::create (){
+    if (m_type == Socket_udp){
         if ((m_master_Socket = ::socket(AF_INET, SOCK_DGRAM, 0)) == -1){
             DLog("Socket error\n");
         }
-    } else if ( type == Socket_tcp ){
+    } else if ( m_type == Socket_tcp ){
         if ((m_master_Socket = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
             DLog("Socket error\n");
         }
     }else{
         m_master_Socket = -1;
     }
-
 }
 
-Socket::~Socket()
-{
-    ::close(m_master_Socket);
+void Socket::close (){
+    if (m_master_Socket != -1){
+        ::close(m_master_Socket);
+    }
     m_master_Socket = -1;
 }
 
@@ -64,6 +71,9 @@ int Socket::bind (int port){
 }
 
 int Socket::connect (const char *ip, const int port){
+    close();
+    create();
+
     socklen_t socklen = sizeof(struct sockaddr_in);
     struct sockaddr_in remote;
 

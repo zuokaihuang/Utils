@@ -115,3 +115,4 @@ void GameScriptEngine::runFileFixedUpdate(const char *name){
 //    int rs = call ("bundle_update");
 //    cout << rs << endl;
 }
+
