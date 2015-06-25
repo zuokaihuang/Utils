@@ -55,21 +55,6 @@ void TestCase::dump (){
 
 }
 
-/*
-#include <testing.h>
-#include <iostream>
-using namespace std;
-static TestCaseEntry _TestCaseEntry([](){
-    void* arg = NULL;
-    TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("testing", [](void* arg){
-        cout << "Go Testing" << __FILE__ << endl;
-        return 0;
-    }, arg );
-
-});
-*/
-
 #ifdef ENABLE_TESTCASE
 
 #include <testing.h>

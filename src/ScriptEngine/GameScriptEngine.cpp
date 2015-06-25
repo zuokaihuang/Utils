@@ -19,7 +19,7 @@ GameScriptEngine::~GameScriptEngine()
 
 void GameScriptEngine::init (){
     // 注册全局函数
-    lua_CFunction fptr = [](lua_State*m_pState){
+    lua_CFunction addscript_fptr = [](lua_State*m_pState){
         cout << "call foo" << endl;
         if ( !lua_istable(m_pState, -1)){
             cout << "is not table" << endl;
@@ -72,8 +72,8 @@ cout << "name" << name << endl;
         return 0;
     };
 
-    //pushFunctionToLuaStack (fptr, "addscript");
-    getGlobalTable ()->push_ref ("addscript", fptr);
+    getGlobalTable ()->push_ref ("addscript", addscript_fptr);
+
 }
 
 void GameScriptEngine::setBasepath (string &path){
@@ -115,4 +115,34 @@ void GameScriptEngine::runFileFixedUpdate(const char *name){
 //    int rs = call ("bundle_update");
 //    cout << rs << endl;
 }
+
+
+#ifdef ENABLE_TESTCASE
+
+#include <testing.h>
+#include <iostream>
+using namespace std;
+TESTCASE_START
+{
+    void* arg = NULL;
+    TestCase& testcase = Sigleton<TestCase>();
+    testcase.addTestCase ("GameScriptEngine", [](void* arg){
+        cout << "Go Testing" << __FILE__ << endl;
+        ScriptEngine se;
+
+        cout << se.getCurrentFullPath () << endl;
+        std::string searchPath(se.getCurrentFullPath ());
+        searchPath += string("/Asset/script");
+        se.addSearchPath ( searchPath.c_str () );
+
+        se.executeString ("require('main')");
+
+        return 0;
+    }, arg );
+}
+
+TESTCASE_END
+
+#endif // ENABLE_TESTCASE
+
 

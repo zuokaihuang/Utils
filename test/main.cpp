@@ -27,7 +27,9 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("URI");
 //    testcase.runTestCase ("HttpC");
 //    testcase.runTestCase ("ScriptEngine");
-    testcase.runTestCase ("AssetManager");
+//    testcase.runTestCase ("AssetManager");
+//    testcase.runTestCase ("GameScriptEngine");
+    testcase.runTestCase ("LRU");
 
 
     clock_t end = clock();

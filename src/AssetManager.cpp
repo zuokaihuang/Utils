@@ -121,7 +121,7 @@ TESTCASE_START
         cout << "2.full web path:" << web << endl;
 
         if (web.size () > 0){
-            string tmp_file = am->getWebFile(web, true, "logo11w.png");
+            string tmp_file = am->getWebFile(web, false, "logo11w.png");
             cout << "the temp file:" << tmp_file << endl;
         }
 
