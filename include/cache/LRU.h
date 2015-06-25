@@ -15,7 +15,7 @@ class LRU
     public:
         Data(){}
         unsigned int hash;
-        const T* v;
+        T v;
     };
 
     typedef typename std::deque<Data*> DataType;
@@ -26,14 +26,18 @@ public:
         static_assert(std::is_pointer<T>::value, "LRU only support pointer");
         m_size = size;
     }
-    ~LRU(){}
+    ~LRU(){
+        for(Data* it : m_data){
+            delete it;
+        }
+    }
     void add(const char* key, const T& t){
         if (m_data.size () == m_size){
             m_data.erase (--m_data.end ());
         }
         Data* data = new Data();
         data->hash = hash_gethash( key );
-        data->v = &t;
+        data->v = t;
         m_data.push_back (data);
     }
 
@@ -41,11 +45,10 @@ public:
         using namespace std;
         unsigned int hash = hash_gethash (key);
         for(Data* it : m_data){
-            cout << "hash:" << hash << "," << it->hash << endl;
             if (it->hash == hash){
                 m_data.push_front ( it );
                 m_data.pop_back ();
-                return (T)it->v;
+                return it->v;
             }
         }
         return (T)nullptr;
