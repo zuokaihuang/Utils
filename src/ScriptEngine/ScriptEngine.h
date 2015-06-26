@@ -309,7 +309,7 @@ ret func_name(const char* field){ \
     int push_ref(const char* key, var_type value){ \
         if (ref == -1){ \
             push_func(m_pState, value);\
-            lua_setglobal ( m_pState, key); \
+            lua_setglobal ( m_pState, key);\
         } else { \
             lua_rawgeti( m_pState , LUA_REGISTRYINDEX , ref ); \
             if ( !lua_istable(m_pState, -1)) return 0; \

@@ -11,16 +11,21 @@ using namespace std;
 #define DLog(...) do{ fprintf( stdout, __VA_ARGS__ ); }while(0);
 #define DLogLuaError( msg ) DLog("[%s %d] [LUA ERROR] %s\n", __FILE__, __LINE__, msg );
 
-ScriptEngine::ScriptEngine()
-{
+ScriptEngine::ScriptEngine() {
     init();
 }
 
 ScriptEngine::~ScriptEngine()
 {
-    lua_close (m_pState);
+    delete m_pTableGlobal;
+    m_pTableGlobal = nullptr;
+
+
     if (m_pCurrentPath) free(m_pCurrentPath);
     m_pCurrentPath = nullptr;
+
+    lua_close (m_pState);
+    m_pState = nullptr;
 }
 
 
