@@ -274,7 +274,7 @@ void HttpC::teardown (){
 
 #ifdef ENABLE_TESTCASE
 
-#include <testing.h>
+#include <debug/testing.h>
 #include <iostream>
 using namespace std;
 TESTCASE_START

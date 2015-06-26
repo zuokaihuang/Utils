@@ -1,4 +1,4 @@
-#include "Sigleton.h"
+#include "scope/Sigleton.h"
 
 
 #ifdef ENABLE_TESTCASE
@@ -26,7 +26,7 @@ public:
 };
 
 
-#include <testing.h>
+#include <debug/testing.h>
 TESTCASE_START
 {
     void* arg = NULL;

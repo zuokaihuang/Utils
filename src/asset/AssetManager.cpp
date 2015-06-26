@@ -1,4 +1,4 @@
-#include <AssetManager.h>
+#include <asset/AssetManager.h>
 using namespace std;
 #include <iostream>
 #include <unistd.h>
@@ -95,7 +95,7 @@ const std::string AssetManager::getWebFile (string fullpath, bool auto_delete, s
 #ifdef ENABLE_TESTCASE
 #include <iostream>
 using namespace std;
-#include <testing.h>
+#include <debug/testing.h>
 TESTCASE_START
 {
     void* arg = NULL;

@@ -1,4 +1,4 @@
-#include "Debug.h"
+#include "debug/Debug.h"
 using namespace std;
 
 std::ostream* fp_logout = &cout;
@@ -34,7 +34,7 @@ mutex &get_log_file_mutex(){
 
 
 #include <thread>
-#include <testing.h>
+#include <debug/testing.h>
 TESTCASE_START
 {
     void* arg = NULL;

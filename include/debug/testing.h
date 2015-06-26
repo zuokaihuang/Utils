@@ -4,7 +4,7 @@
 #include <functional>
 #include <map>
 
-#include "Sigleton.h"
+#include "scope/Sigleton.h"
 typedef std::function<void()> TestCaseEntryFunction;
 struct TestCaseEntry{
     TestCaseEntry(TestCaseEntryFunction func){

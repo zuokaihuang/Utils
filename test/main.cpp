@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-#include <testing.h>
+#include <debug/testing.h>
 #include <memory/MemoryPool.h>
 
 #ifdef REVERSION
@@ -28,8 +28,8 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("HttpC");
 //    testcase.runTestCase ("ScriptEngine");
 //    testcase.runTestCase ("AssetManager");
-//    testcase.runTestCase ("GameScriptEngine");
-    testcase.runTestCase ("LRU");
+    testcase.runTestCase ("GameScriptEngine");
+//    testcase.runTestCase ("LRU");
 
 
     clock_t end = clock();

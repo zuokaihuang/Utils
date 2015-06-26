@@ -97,12 +97,11 @@ size_t RingBuffer::copy(const Buffer& rhs){
 
 #ifdef ENABLE_TESTCASE
 
-#include <testing.h>
+#include <debug/testing.h>
 #include <iostream>
 using namespace std;
 
-#include <testing.h>
-#include <Debug.h>
+#include <debug/Debug.h>
 
 TESTCASE_START
 {

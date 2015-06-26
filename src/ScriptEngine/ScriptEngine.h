@@ -359,4 +359,12 @@ protected:
     char* m_pCurrentPath;
 };
 
+// lua helper
+
+
+
+inline int LuaCheckParamCount(lua_State* env){
+    return env != NULL ? lua_gettop (env) : 0;
+}
+
 #endif // SCRIPTENGINE_H

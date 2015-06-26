@@ -1,7 +1,6 @@
 #include "memory/MemoryPool.h"
 #include <iostream>
 
-#include <testing.h>
 #include <iostream>
 using namespace std;
 MemoryPool::MemoryPool() :
@@ -72,11 +71,10 @@ void MemoryPool::dump (){
 
 #ifdef ENABLE_TESTCASE
 
-#include <testing.h>
+#include <debug/testing.h>
 #include <iostream>
 using namespace std;
 
-#include <testing.h>
 
 class A{
 public:

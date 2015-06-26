@@ -4,18 +4,21 @@ using namespace std;
 
 #include <unistd.h>
 
+
 #define FILE_PATH_MAX_LEN 1024
 
 GameScriptEngine::GameScriptEngine():
     ScriptEngine()
 {
-
+    this->init ();
 }
 
 GameScriptEngine::~GameScriptEngine()
 {
 
 }
+
+void dumpstack(lua_State* env);
 
 void GameScriptEngine::init (){
     // 注册全局函数
@@ -74,6 +77,58 @@ cout << "name" << name << endl;
 
     getGlobalTable ()->push_ref ("addscript", addscript_fptr);
 
+    getGlobalTable ()->push_ref ("prequire", [](lua_State* state) -> int{
+        auto se = GameScriptEngine::getInstance ();
+        auto env = se->getLuaState ();
+        assert ( !(env != state) && "Lua state error!" );
+
+        dumpstack(env);
+
+        auto args_cnt = LuaCheckParamCount(state);
+        if ( args_cnt != 2) {
+            lua_pushnil (state);
+            return 1;
+        }
+
+        const char* path = NULL;
+        path = !lua_isstring (state, 1) ? NULL : luaL_checkstring( state, 1);
+        if ( !path ){
+            cout << "arg error not string:" << lua_typename ( state, lua_type(state, -1) ) << endl;
+            lua_pushnil (state);
+            return 1;
+        }
+
+        if ( !lua_istable(state, 2) ) {
+            cout << "==> " << lua_typename ( state, lua_type(state, 2) ) << endl;
+            cout << "arg error not table:" << lua_typename ( state, lua_type(state, 2) ) << endl;
+            lua_pushnil (state);
+            return 1;
+        }
+
+
+
+        cout << "path:" << path << endl;
+
+        lua_pushinteger (state, 1);
+        return 1;
+    });
+
+}
+
+void dumpstack(lua_State* env){
+    if (!env) return;
+    int count = lua_gettop (env);
+
+    for( int i=1; i <= count ;i++){
+        int type = lua_type (env, i);
+        cout << i << "." << lua_typename (env, type) << " => ";
+        if ( LUA_TSTRING == type ){
+            cout << luaL_checkstring(env, i) << endl;
+        }
+        else {
+            cout << endl;
+        }
+    }
 }
 
 void GameScriptEngine::setBasepath (string &path){
@@ -101,25 +156,19 @@ void GameScriptEngine::addExecuteFile (const char *name, const char *filename){
 void GameScriptEngine::pollExecuteFiles (){
     for( auto& it : m_executeFileMap){
         const char* name = it.first;
-        //const char* filename = it.second;
-
         runFileFixedUpdate(name);
     }
 
-//    int rs = call ("bundle_update");
-//    cout << rs << endl;
 }
 
 void GameScriptEngine::runFileFixedUpdate(const char *name){
     cout << name << endl;
-//    int rs = call ("bundle_update");
-//    cout << rs << endl;
 }
 
 
 #ifdef ENABLE_TESTCASE
 
-#include <testing.h>
+#include <debug/testing.h>
 #include <iostream>
 using namespace std;
 TESTCASE_START
@@ -128,14 +177,14 @@ TESTCASE_START
     TestCase& testcase = Sigleton<TestCase>();
     testcase.addTestCase ("GameScriptEngine", [](void* arg){
         cout << "Go Testing" << __FILE__ << endl;
-        ScriptEngine se;
+        GameScriptEngine *se = GameScriptEngine::getInstance ();
 
-        cout << se.getCurrentFullPath () << endl;
-        std::string searchPath(se.getCurrentFullPath ());
+        cout << se->getCurrentFullPath () << endl;
+        std::string searchPath(se->getCurrentFullPath ());
         searchPath += string("/Asset/script");
-        se.addSearchPath ( searchPath.c_str () );
+        se->addSearchPath ( searchPath.c_str () );
 
-        se.executeString ("require('main')");
+        se->executeString ("require('gamemain')");
 
         return 0;
     }, arg );

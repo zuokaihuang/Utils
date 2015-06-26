@@ -1,7 +1,6 @@
 #ifndef ASSETMANAGER_H
 #define ASSETMANAGER_H
 
-#include <testing.h>
 #include <list>
 #include <string>
 #include <net/HttpC.h>

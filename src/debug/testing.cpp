@@ -1,4 +1,4 @@
-#include "testing.h"
+#include "debug/testing.h"
 
 #include <iostream>
 using namespace std;
@@ -57,7 +57,7 @@ void TestCase::dump (){
 
 #ifdef ENABLE_TESTCASE
 
-#include <testing.h>
+#include <debug/testing.h>
 #include <iostream>
 using namespace std;
 TESTCASE_START

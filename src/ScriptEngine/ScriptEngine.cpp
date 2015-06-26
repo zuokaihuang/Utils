@@ -99,7 +99,6 @@ const char* ScriptEngine::getCurrentFullPath (){
     return m_pCurrentPath;
 }
 
-
 // Table
 
 Table* Table::getTable (const char *field){
@@ -136,6 +135,9 @@ Table* Table::getTable (const char *field){
     return tb;
 }
 
+
+
+
 Table* Table::createTable (const char* name, bool is_global){
     int new_ref = 0;
     if (is_global){
@@ -157,7 +159,7 @@ Table* Table::createTable (const char* name, bool is_global){
 
 #ifdef ENABLE_TESTCASE
 
-#include <testing.h>
+#include <debug/testing.h>
 #include <iostream>
 using namespace std;
 TESTCASE_START

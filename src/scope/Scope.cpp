@@ -1,4 +1,4 @@
-#include "Scope.h"
+#include "scope/Scope.h"
 
 
 ScopeGuard::~ScopeGuard (){
@@ -25,7 +25,7 @@ void do_close(int fd){
 }
 
 
-#include <testing.h>
+#include <debug/testing.h>
 TESTCASE_START
 {
     void* arg = NULL;

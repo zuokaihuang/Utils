@@ -228,7 +228,7 @@ bool URI::valid (){
 
 #ifdef ENABLE_TESTCASE
 
-#include <testing.h>
+#include <debug/testing.h>
 TESTCASE_START
 {
     void* arg = NULL;
