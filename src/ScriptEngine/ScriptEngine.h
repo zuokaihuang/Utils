@@ -3,10 +3,21 @@
 
 #include <vector>
 #include <assert.h>
-
+#include <iostream>
 extern "C"{
   #include <lua/lua.hpp>
 }
+
+// lua helper
+
+inline int LuaCheckParamCount(lua_State* env){
+    return env != NULL ? lua_gettop (env) : 0;
+}
+
+void LuaDumpStack(lua_State* env);
+void LuaDumpTable(lua_State* env, const int index);
+
+
 
 // Function
 class Function{
@@ -359,12 +370,5 @@ protected:
     char* m_pCurrentPath;
 };
 
-// lua helper
-
-
-
-inline int LuaCheckParamCount(lua_State* env){
-    return env != NULL ? lua_gettop (env) : 0;
-}
 
 #endif // SCRIPTENGINE_H

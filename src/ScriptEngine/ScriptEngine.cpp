@@ -162,6 +162,63 @@ Table* Table::createTable (const char* name, bool is_global){
     return new Table(m_pState, name, new_ref);
 }
 
+
+#include <iomanip>
+static void printitem(lua_State* env, const int i){
+    int type = lua_type (env, i);
+    cout << "[";
+    switch (type) {
+    case LUA_TSTRING:{
+        cout << luaL_checkstring(env, i) ;
+    }break;
+    case LUA_TNUMBER:{
+        cout << luaL_checknumber (env, i) ;
+    }break;
+    case LUA_TBOOLEAN:{
+        cout << (luaL_checkinteger (env, i)==0 ? "false" :"true") ;
+    }break;
+    default:
+        break;
+    }
+    cout << "](" << lua_typename (env, type) << ")";
+}
+
+
+void LuaDumpStack(lua_State* env){
+    if (!env) return;
+
+    int count = lua_gettop (env);
+    cout << "\n*****************Dump stack*****************" <<endl;
+    for( int i=1; i <= count ;i++){
+        cout << '"' << i << '"' ;
+        printitem(env, i);
+        cout << endl;
+    }
+    cout << "=================Dump End=================" <<endl;
+}
+
+void LuaDumpTable(lua_State* env, const int index){
+    if (!env) return;
+
+    cout << "\n*****************Dump table*****************" <<endl;
+    /*
+     * pushnil
+     * while( lua_next(env, tabla_index_of_stack) { -1 -> key; -2 -> value; lua_pop(env, 2); }
+    */
+    lua_pushnil (env);
+    while(lua_next (env, index)){
+        lua_pushvalue (env, -2);
+        const char* key = lua_tostring(env, -1);
+        cout << '"' << key << '"';
+        printitem (env, -2);
+        cout << endl;
+
+        lua_pop(env, 2);
+    }
+    cout << "=================Dump End=================" <<endl;
+}
+
+
 #ifdef ENABLE_TESTCASE
 
 #include <debug/testing.h>

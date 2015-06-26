@@ -17,7 +17,6 @@ GameScriptEngine::~GameScriptEngine()
 
 }
 
-void dumpstack(lua_State* env);
 
 void GameScriptEngine::init (){
     // 注册全局函数
@@ -28,14 +27,14 @@ void GameScriptEngine::init (){
         auto env = se->getLuaState ();
         assert ( !(env != state) && "Lua state error!" );
 
-        dumpstack(env);
+        LuaDumpStack(env);
 
-//        auto args_cnt = LuaCheckParamCount(state);
-//        if ( args_cnt != 2) {
-//            cout << "arg num error" << endl;
-//            lua_pushnil (state);
-//            return 1;
-//        }
+        //        auto args_cnt = LuaCheckParamCount(state);
+        //        if ( args_cnt != 2) {
+        //            cout << "arg num error" << endl;
+        //            lua_pushnil (state);
+        //            return 1;
+        //        }
 
         const char* path = NULL;
         path = !lua_isstring (state, 1) ? NULL : luaL_checkstring( state, 1);
@@ -51,20 +50,20 @@ void GameScriptEngine::init (){
             lua_pushnil (state);
             return 1;
         }
-
+cout << "-=--=-=-=-=-=-=-=-=-=-]" << endl;
+        LuaDumpTable (env, 2);
         const char* key = "onSucess";
         int rs = 0;
 
         lua_getfield ( state, 2, key);
-        cout << "--------------------------.==> " << lua_typename ( state, lua_type(state, 2) ) << endl;
         rs = lua_pcall(env, 0, 1, 0);
         cout << "rs " << rs << endl;
 
         lua_pop(env, 1); // 还原stack, 因为 lua_getfield
+return 0;
+        LuaDumpStack(env);
 
-        dumpstack(env);
-
-//      第四个参数的table
+        //      第四个参数的table
         lua_getfield ( state, 4, key);
         cout << "--------------------------.==> " << lua_typename ( state, lua_type(state, 2) ) << endl;
         rs = lua_pcall(env, 0, 1, 0);
@@ -72,8 +71,12 @@ void GameScriptEngine::init (){
 
         lua_pop(env, 1); // 还原stack, 因为 lua_getfield
 
-        dumpstack(env);
+        LuaDumpStack(env);
 
+        // dump table
+        LuaDumpTable (env, 4);
+
+        LuaDumpStack(env);
 
         cout << "path:" << path << endl;
 
@@ -82,33 +85,6 @@ void GameScriptEngine::init (){
     });
 
 }
-
-void dumpstack(lua_State* env){
-    if (!env) return;
-    int count = lua_gettop (env);
-cout << "\n*****************Dump stack*****************" <<endl;
-    for( int i=1; i <= count ;i++){
-        int type = lua_type (env, i);
-        cout << i << "." << lua_typename (env, type) << " => ";
-
-        switch (type) {
-        case LUA_TSTRING:{
-            cout << luaL_checkstring(env, i) << endl;
-        }break;
-        case LUA_TNUMBER:{
-            cout << luaL_checknumber (env, i) << endl;
-        }break;
-        case LUA_TBOOLEAN:{
-            cout << (luaL_checkinteger (env, i)==0 ? "false" :"true") << endl;
-        }break;
-        default:
-            cout << endl;
-            break;
-        }
-    }
-    cout << "=================Dump End=================" <<endl;
-}
-
 void GameScriptEngine::setBasepath (string &path){
     m_basepath = path;
     addSearchPath ( path.c_str () );
@@ -124,7 +100,7 @@ void GameScriptEngine::addExecuteFile (const char *name, const char *filename){
         snprintf (buffer, FILE_PATH_MAX_LEN, "%s", (filename+7 ));
     }else{
         // not start with 'file://'
-       snprintf (buffer, FILE_PATH_MAX_LEN, "%s/%s", current_folder, filename);
+        snprintf (buffer, FILE_PATH_MAX_LEN, "%s/%s", current_folder, filename);
     }
     m_executeFileMap[name] = buffer;
 
