@@ -16,6 +16,7 @@ public:
     void setBasepath(std::string& path);
     void addExecuteFile(const char* name,const char* filename);
     void pollExecuteFiles();
+    void addSearchPath(const char *path);
 private:
     GameScriptEngine();
     ~GameScriptEngine();

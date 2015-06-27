@@ -15,6 +15,11 @@ AssetManager::AssetManager(){
 
 }
 AssetManager::~AssetManager (){
+    for(std::string path : m_downloadFiles){
+        if (access(path.c_str (), R_OK) == F_OK ){
+            unlink (path.c_str ());
+        }
+    }
 }
 
 AssetManager* AssetManager::getInstance (){
@@ -32,6 +37,7 @@ void AssetManager::addSearchPath (std::string str){
 const std::string& AssetManager::getFileFullPath (string abs_path){
     for( std::string& path : m_searchPaths){
         string realpath = path + abs_path;
+
         if (access(realpath.c_str (), R_OK) == F_OK ){
             return realpath;
         }
@@ -60,10 +66,11 @@ void AssetManager::addSearchWebPath(string url){
 }
 
 const std::string& AssetManager::getFileFullWebPath (string abs_path){
+    cout << "==============>" << abs_path << endl;
     for( std::string& path : m_searchWebPaths){
         string realpath = path + abs_path;
         httpc.head (realpath);
-
+        cout << httpc.getHeader () << endl;
         if ( httpc.getStateCode () == 200){
             return realpath;
         }
@@ -86,7 +93,10 @@ const std::string AssetManager::getWebFile (string fullpath, bool auto_delete, s
     httpc.get (fullpath);
     const char* path = httpc.getWritedFilePath ();
 
-    if (path) return string(path);
+    if (path){
+        m_downloadFiles.push_back (path);
+        return string(path);
+    }
 
     static std::string empty("");
     return empty;

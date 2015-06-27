@@ -27,7 +27,7 @@ private:
     std::list<std::string> m_searchWebPaths;
     std::string m_pCurrentWebPath;
     HttpC httpc;
-
+    std::list<std::string> m_downloadFiles;
 };
 
 #endif // ASSETMANAGER_H
