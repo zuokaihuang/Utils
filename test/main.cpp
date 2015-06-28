@@ -28,8 +28,10 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("HttpC");
 //    testcase.runTestCase ("ScriptEngine");
 //    testcase.runTestCase ("AssetManager");
-    testcase.runTestCase ("GameScriptEngine");
+//    testcase.runTestCase ("GameScriptEngine");
 //    testcase.runTestCase ("LRU");
+    testcase.runTestCase ("Net");
+
 
 
     clock_t end = clock();
