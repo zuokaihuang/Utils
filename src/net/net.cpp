@@ -226,7 +226,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("Net", [](void* arg){
+    testcase.addTestCase ("Net", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         int rs;

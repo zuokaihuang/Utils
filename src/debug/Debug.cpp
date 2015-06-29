@@ -39,7 +39,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("Debug", [](void* arg){
+    testcase.addTestCase ("Debug", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         DLog(1, 1.1, "Hello", (int*)0x0, 1.2f, 1==1, string("你好"));

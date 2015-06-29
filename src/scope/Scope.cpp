@@ -30,7 +30,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("Scope", [](void* arg){
+    testcase.addTestCase ("Scope", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         auto fd = do_open();

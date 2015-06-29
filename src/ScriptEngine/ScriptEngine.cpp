@@ -228,7 +228,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("ScriptEngine", [](void* arg){
+    testcase.addTestCase ("ScriptEngine", [](){
         cout << "Go Testing" << __FILE__ << endl;
         ScriptEngine se;
 

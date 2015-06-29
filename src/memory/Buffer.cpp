@@ -91,7 +91,7 @@ size_t RingBuffer::copy(const char *data, size_t sz){
 }
 
 size_t RingBuffer::copy(const Buffer& rhs){
-
+    return 0;
 }
 
 
@@ -107,7 +107,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("Buffer", [](void* arg){
+    testcase.addTestCase ("Buffer", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         MemoryPool pool;

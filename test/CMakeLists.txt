@@ -11,7 +11,7 @@ ADD_DEFINITIONS(-DREVERSION=0.1)
 AUX_SOURCE_DIRECTORY(. SRC_LIST)
 
 # recompile all cpp files, static init
-AUX_SOURCE_DIRECTORY(../src SRC_LIST)
+# AUX_SOURCE_DIRECTORY(../src SRC_LIST)
 
 ADD_EXECUTABLE(Utils.app ${SRC_LIST} ${LIB_LIST} )
 target_link_libraries(Utils.app ${LIBRARY_OUTPUT_PATH}/libUtils.a)

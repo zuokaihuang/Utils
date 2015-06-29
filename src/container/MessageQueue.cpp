@@ -10,7 +10,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("MessageQueue", [](void* arg){
+    testcase.addTestCase ("MessageQueue", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         MessageQueue<int> mq;

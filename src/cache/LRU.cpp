@@ -22,7 +22,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("LRU", [](void* arg){
+    testcase.addTestCase ("LRU", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         LRU<const char*> lru(3);

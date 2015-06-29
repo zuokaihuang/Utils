@@ -163,7 +163,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("GameScriptEngine", [](void* arg){
+    testcase.addTestCase ("GameScriptEngine", [](){
         cout << "Go Testing" << __FILE__ << endl;
         GameScriptEngine *se = GameScriptEngine::getInstance ();
 

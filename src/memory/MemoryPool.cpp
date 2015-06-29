@@ -90,7 +90,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("MemoryPool", [](void* arg){
+    testcase.addTestCase ("MemoryPool", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         MemoryPool pool;

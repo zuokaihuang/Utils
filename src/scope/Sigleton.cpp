@@ -31,7 +31,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("Sigleton", [](void* arg){
+    testcase.addTestCase ("Sigleton", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         for(int i=0;i<100;i++){

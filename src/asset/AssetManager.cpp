@@ -34,8 +34,8 @@ void AssetManager::addSearchPath (std::string str){
     m_searchPaths.push_front (str);
 }
 
-const std::string& AssetManager::getFileFullPath (string abs_path){
-    for( std::string& path : m_searchPaths){
+const std::string AssetManager::getFileFullPath (string abs_path){
+    for( std::string path : m_searchPaths){
         string realpath = path + abs_path;
 
         if (access(realpath.c_str (), R_OK) == F_OK ){
@@ -65,7 +65,7 @@ void AssetManager::addSearchWebPath(string url){
     }
 }
 
-const std::string& AssetManager::getFileFullWebPath (string abs_path){
+const std::string AssetManager::getFileFullWebPath (string abs_path){
     cout << "==============>" << abs_path << endl;
     for( std::string& path : m_searchWebPaths){
         string realpath = path + abs_path;
@@ -110,7 +110,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("AssetManager", [](void* arg){
+    testcase.addTestCase ("AssetManager", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         AssetManager* am = AssetManager::getInstance();

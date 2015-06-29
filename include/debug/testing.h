@@ -4,6 +4,7 @@
 #include <functional>
 #include <map>
 
+#include <debug/Debug.h>
 #include "scope/Sigleton.h"
 typedef std::function<void()> TestCaseEntryFunction;
 struct TestCaseEntry{
@@ -19,7 +20,7 @@ public:
     ~TestCase();
 public:
 
-    typedef std::function<int(void* arg)> TestFunction;
+    typedef std::function<int()> TestFunction;
     void addTestCase(std::string name, TestFunction function, void*arg);
     void runAllTestCase();
     void runTestCase(std::string name);
@@ -28,13 +29,14 @@ private:
     typedef
     struct _tagTestItem{
         TestFunction func;
-        void* arg;
     }TestItem;
     std::map< std::string, TestItem* > mTestFunctions;
 };
 
-
-
+/*
+ * Old Version
+ * Deprecated
+*/
 #define TESTCASE_START \
 static TestCaseEntry _TestCaseEntry([](){ \
     do{ \
@@ -42,6 +44,18 @@ static TestCaseEntry _TestCaseEntry([](){ \
 #define TESTCASE_END \
     }while(0); \
 });
+
+
+#define TC_Entry( __NAME__ ) \
+    extern "C" { void tc##__NAME__(){ test_##__NAME__(); } } \
+    TESTCASE_START \
+    { \
+        void* arg = NULL; \
+        TestCase& testcase = Sigleton<TestCase>(); \
+        testcase.addTestCase ( #__NAME__ ,test_testing, NULL ); \
+    } \
+    TESTCASE_END
+
 
 
 #endif // TESTING_H

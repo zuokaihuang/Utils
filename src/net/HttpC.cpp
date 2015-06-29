@@ -281,7 +281,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("HttpC", [](void* arg){
+    testcase.addTestCase ("HttpC", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         HttpC http;

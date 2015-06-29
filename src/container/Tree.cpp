@@ -19,7 +19,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("Tree", [](void* arg){
+    testcase.addTestCase ("Tree", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
 //        TreeNode<int> root(0);

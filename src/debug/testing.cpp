@@ -1,5 +1,6 @@
 #include "debug/testing.h"
 
+#include <dlfcn.h>
 #include <iostream>
 using namespace std;
 
@@ -8,26 +9,25 @@ TestCase::TestCase()
 //    cout << __func__ << "=>" << this << endl;
 }
 
-TestCase::~TestCase()
-{
-
+TestCase::~TestCase(){
+    for( auto item: mTestFunctions){
+        TestItem* testItem = item.second;
+        delete testItem;
+    }
 }
 
 void TestCase::addTestCase (string name, TestFunction function, void *arg){
-    auto item = new TestItem{function, arg};
+    auto item = new TestItem{function};
 
     mTestFunctions.insert ( std::make_pair(name, item));
 }
 
 void TestCase::runAllTestCase(){
-    auto item = mTestFunctions.begin ();
-
-    while( item != mTestFunctions.end () ){
-        auto name = item->first;
-        TestItem* i = item->second;
-        i->func(i->arg);
-
-        item++;
+    for( auto item: mTestFunctions){
+        TestItem* testItem = item.second;
+        if (testItem && testItem->func){
+            testItem->func();
+        }
     }
 }
 
@@ -35,7 +35,25 @@ void TestCase::runTestCase (string name){
     auto item = mTestFunctions.find (name);
     if (item != mTestFunctions.end ()){
         TestItem* i = item->second;
-        i->func(i->arg);
+        i->func();
+        DLog("Normal");
+    }else{
+        cout << "TestCase not found [" << name << "]" << endl;
+        void* handle = dlopen (NULL, RTLD_LAZY);
+        if (!handle){
+            ELog("dlopen error");
+            return;
+        }
+        char buffer[512];
+        snprintf(buffer, 512, "tc%s", name.c_str ());
+DLog("dlopen");
+        typedef void(*Fptr)(void*);
+        Fptr fptr = (Fptr)dlsym (handle, buffer);
+        DLog( (void*)fptr );
+        if (!fptr){
+        }else{
+            fptr( NULL );
+        }
     }
 }
 
@@ -60,16 +78,20 @@ void TestCase::dump (){
 #include <debug/testing.h>
 #include <iostream>
 using namespace std;
-TESTCASE_START
-{
-    void* arg = NULL;
-    TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("testing", [](void* arg){
-        cout << "Go Testing" << __FILE__ << endl;
-        return 0;
-    }, arg );
+static int test_testing(){
+    cout << "Go Testing" << __FILE__ << endl;
+    return 0;
 }
 
-TESTCASE_END
+TC_Entry( testing )
+
+
+//TESTCASE_START
+//{
+//    void* arg = NULL;
+//    TestCase& testcase = Sigleton<TestCase>();
+//    testcase.addTestCase ("testing",test_testing, NULL );
+//}
+//TESTCASE_END
 
 #endif // ENABLE_TESTCASE

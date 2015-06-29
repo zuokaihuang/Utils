@@ -13,13 +13,13 @@ int main(int argc, char *argv[])
 {
     clock_t start = clock ();
     TestCase& testcase = Sigleton<TestCase>();
-//    testcase.dump ();
+//   testcase.dump ();
 
     //    testcase.runAllTestCase ();
-    //    testcase.runTestCase ("testing");
+        testcase.runTestCase ("testing");
     //    testcase.runTestCase ("Tree");
     //    testcase.runTestCase ("MemoryPool");
-    //    testcase.runTestCase ("Sigleton");
+//        testcase.runTestCase ("Sigleton");
     //    testcase.runTestCase ("Buffer");
 //        testcase.runTestCase ("Debug");
 //        testcase.runTestCase ("SafeQueue");
@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("AssetManager");
 //    testcase.runTestCase ("GameScriptEngine");
 //    testcase.runTestCase ("LRU");
-    testcase.runTestCase ("Net");
+//    testcase.runTestCase ("Net");
 
 
 

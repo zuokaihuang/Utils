@@ -233,7 +233,7 @@ TESTCASE_START
 {
     void* arg = NULL;
     TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("URI", [](void* arg){
+    testcase.addTestCase ("URI", [](){
         cout << "Go Testing" << __FILE__ << endl;
 
         URI url;

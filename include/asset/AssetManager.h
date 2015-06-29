@@ -14,10 +14,10 @@ private:
 public:
     void addSearchPath (std::string str);
     const char* getCurrentFullPath();
-    const std::string& getFileFullPath(std::string abs_path);
+    const std::string getFileFullPath(std::string abs_path);
 
     void addSearchWebPath(std::string url);
-    const std::string& getFileFullWebPath(std::string abs_path);
+    const std::string getFileFullWebPath(std::string abs_path);
     const std::string getWebFile(std::string fullpath, bool auto_delete, std::string tag);
 
 private:

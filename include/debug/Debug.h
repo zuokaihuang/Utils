@@ -25,7 +25,7 @@ std::ostream& __DLog(Args&&...args){
 
 template <typename...Args>
 std::ostream& __ELog(Args&&...args){
-    print(std::cerr, std::forward<Args>(args)...) << std::endl;
+    return print(std::cerr, std::forward<Args>(args)...) << std::endl;
 }
 
 // log to file
@@ -46,10 +46,16 @@ void DebugLogToFileOpen(const std::string filename);
 std::ostream& DebugGetOutPutLogFile();
 void DebugLogToFileClose();
 
-
+#ifndef DLog
 #define DLog(...) __DLog(__VA_ARGS__)
-#define ELog(...) __ELog(__VA_ARGS__)
-#define FLog(...) _FLog(DebugGetOutPutLogFile(), __VA_ARGS__)
+#endif
 
+#ifndef ELog
+#define ELog(...) __ELog(__VA_ARGS__)
+#endif
+
+#ifndef FLog
+#define FLog(...) _FLog(DebugGetOutPutLogFile(), __VA_ARGS__)
+#endif
 
 #endif // DEBUG_H
