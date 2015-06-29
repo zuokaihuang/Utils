@@ -58,4 +58,8 @@ void DebugLogToFileClose();
 #define FLog(...) _FLog(DebugGetOutPutLogFile(), __VA_ARGS__)
 #endif
 
+#ifndef DAssert
+#define DAssert(cond, msg) { if( !(cond) ){ ELog(msg); assert(!cond && msg); } }
+#endif
+
 #endif // DEBUG_H

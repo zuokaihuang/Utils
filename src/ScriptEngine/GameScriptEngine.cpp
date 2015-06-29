@@ -1,4 +1,4 @@
-#include "GameScriptEngine.h"
+#include <ScriptEngine/GameScriptEngine.h>
 #include <iostream>
 using namespace std;
 
