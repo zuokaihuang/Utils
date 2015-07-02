@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 //   testcase.dump ();
 
     //    testcase.runAllTestCase ();
-        testcase.runTestCase ("testing");
+//        testcase.runTestCase ("testing");
     //    testcase.runTestCase ("Tree");
     //    testcase.runTestCase ("MemoryPool");
 //        testcase.runTestCase ("Sigleton");
@@ -31,6 +31,7 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("GameScriptEngine");
 //    testcase.runTestCase ("LRU");
 //    testcase.runTestCase ("Net");
+    testcase.runTestCase ("message");
 
 
 

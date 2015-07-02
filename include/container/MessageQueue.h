@@ -12,7 +12,9 @@ template <typename T>
 class MessageQueue
 {
 public:
-    MessageQueue(){}
+    MessageQueue(){
+        static_assert(std::is_pointer<T>::value, "MessageQueue Only Support pointer");
+    }
     ~MessageQueue(){}
 
     void push(T& t){
@@ -23,7 +25,7 @@ public:
         m_CondV.notify_one ();
     }
 
-    T& pop_with_block(){
+    T pop_with_block(){
         std::lock_guard<std::mutex> guard_access(m_Mutex);
 
         std::unique_lock<std::mutex> _lock(m_Mutex_Cond);
@@ -38,22 +40,21 @@ public:
     /// \brief pop_non_block
     /// \return
     ///
-    T& pop_non_block(T& default_val){
+    const T pop_non_block(){
         std::lock_guard<std::mutex> guard_access(m_Mutex);
         std::unique_lock<std::mutex> _lock(m_Mutex_Cond);
         if (m_Queue.is_empty ()){
-            std::cout << "aa" << std::endl;
-            return default_val;
+            return nullptr;
         }
         T& front(m_Queue.pop ());
         return front;
     }
 
-    T& pop_with_timeout(T& default_val, int ms){
+    const T pop_with_timeout(int ms){
         std::unique_lock<std::mutex> _lock(m_Mutex_Cond);
         m_CondV.wait_for (_lock,  std::chrono::milliseconds(ms));
         if (m_Queue.is_empty ()){
-            return default_val;
+            return nullptr;
         }
         T& front(m_Queue.pop ());
         return front;

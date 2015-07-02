@@ -272,33 +272,3 @@ void HttpC::teardown (){
     m_WriteFileName = nullptr;
 }
 
-#ifdef ENABLE_TESTCASE
-
-#include <debug/testing.h>
-#include <iostream>
-using namespace std;
-TESTCASE_START
-{
-    void* arg = NULL;
-    TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("HttpC", [](){
-        cout << "Go Testing" << __FILE__ << endl;
-
-        HttpC http;
-        std::string url = "http://m.baidu.com/?from=1002296a";
-
-        http.setWriteToFile (true, true);
-        http.get (url);
-
-        cout << "http code:" << http.getStateCode () << endl;
-        cout << "http content length:" << http.getContentLength () << endl;
-        if (http.getContent ())
-            cout << "content:" << (char*)http.getContent () << endl;
-
-        return 0;
-    }, arg );
-}
-
-TESTCASE_END
-
-#endif // ENABLE_TESTCASE

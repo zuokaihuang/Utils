@@ -219,32 +219,3 @@ void LuaDumpTable(lua_State* env, const int index){
 }
 
 
-#ifdef ENABLE_TESTCASE
-
-#include <debug/testing.h>
-#include <iostream>
-using namespace std;
-TESTCASE_START
-{
-    void* arg = NULL;
-    TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("ScriptEngine", [](){
-        cout << "Go Testing" << __FILE__ << endl;
-        ScriptEngine se;
-
-        cout << se.getCurrentFullPath () << endl;
-        std::string searchPath(se.getCurrentFullPath ());
-        searchPath += string("/Asset/script");
-        se.addSearchPath ( searchPath.c_str () );
-
-        se.executeString ("require('main')");
-
-        return 0;
-    }, arg );
-}
-
-TESTCASE_END
-
-#endif // ENABLE_TESTCASE
-
-

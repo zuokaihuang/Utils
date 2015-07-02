@@ -4,6 +4,7 @@ ADD_DEFINITIONS( -DREVERSION=0.1 )
 
 # haeder serach path
 INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include")
+INCLUDE_DIRECTORIES("${CMAKE_SOURCE_DIR}/include/third_party")
 
 include(CheckCXXCompilerFlag)
 CHECK_CXX_COMPILER_FLAG("-std=c++11" COMPILER_SUPPORTS_CXX11)

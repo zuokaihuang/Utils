@@ -3,6 +3,7 @@
 
 #include <functional>
 #include <map>
+#include <debug/Debug.h>
 
 #include <debug/Debug.h>
 #include "scope/Sigleton.h"
@@ -33,10 +34,6 @@ private:
     std::map< std::string, TestItem* > mTestFunctions;
 };
 
-/*
- * Old Version
- * Deprecated
-*/
 #define TESTCASE_START \
 static TestCaseEntry _TestCaseEntry([](){ \
     do{ \
@@ -52,7 +49,7 @@ static TestCaseEntry _TestCaseEntry([](){ \
     { \
         void* arg = NULL; \
         TestCase& testcase = Sigleton<TestCase>(); \
-        testcase.addTestCase ( #__NAME__ ,test_testing, NULL ); \
+        testcase.addTestCase ( #__NAME__ ,test_##__NAME__, NULL ); \
     } \
     TESTCASE_END
 

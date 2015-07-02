@@ -226,34 +226,4 @@ bool URI::valid (){
 }
 
 
-#ifdef ENABLE_TESTCASE
-
-#include <debug/testing.h>
-TESTCASE_START
-{
-    void* arg = NULL;
-    TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("URI", [](){
-        cout << "Go Testing" << __FILE__ << endl;
-
-        URI url;
-        url.parse ("http://www.baidu.com:80/q/s/query.php?hello=ppp");
-        cout << "parse ok?=>" << url.valid () << endl;
-        url.dump ();
-        cout << "=============" << endl;
-
-        URI url2;
-        url2.parse ("file:///tmp/afile");
-
-        cout << "parse ok?=>" << url2.valid () << endl;
-        url2.dump ();
-        cout << "=============" << endl;
-
-        return 0;
-    }, arg );
-}
-
-TESTCASE_END
-
-#endif // ENABLE_TESTCASE
 

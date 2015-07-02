@@ -73,25 +73,4 @@ void TestCase::dump (){
 
 }
 
-#ifdef ENABLE_TESTCASE
 
-#include <debug/testing.h>
-#include <iostream>
-using namespace std;
-static int test_testing(){
-    cout << "Go Testing" << __FILE__ << endl;
-    return 0;
-}
-
-TC_Entry( testing )
-
-
-//TESTCASE_START
-//{
-//    void* arg = NULL;
-//    TestCase& testcase = Sigleton<TestCase>();
-//    testcase.addTestCase ("testing",test_testing, NULL );
-//}
-//TESTCASE_END
-
-#endif // ENABLE_TESTCASE

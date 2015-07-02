@@ -82,7 +82,7 @@ void GameScriptEngine::init (){
         const size_t buffer_size = 512;
         char buffer[buffer_size];
         memset(buffer, 0, buffer_size);
-        snprintf (buffer, buffer_size, "local status, err = pcall(require, '%s');if status ~= true then error('error to load module ') end;\0", path);
+        snprintf (buffer, buffer_size, "local status, err = pcall(require, '%s');if status ~= true then error('error to load module ') end;", path);
         rs = se->executeString (buffer);
         if (rs != 0){
             auto am = AssetManager::getInstance ();
@@ -153,34 +153,5 @@ void GameScriptEngine::runFileFixedUpdate(const char *name){
     cout << name << endl;
 }
 
-
-#ifdef ENABLE_TESTCASE
-
-#include <debug/testing.h>
-#include <iostream>
-using namespace std;
-TESTCASE_START
-{
-    void* arg = NULL;
-    TestCase& testcase = Sigleton<TestCase>();
-    testcase.addTestCase ("GameScriptEngine", [](){
-        cout << "Go Testing" << __FILE__ << endl;
-        GameScriptEngine *se = GameScriptEngine::getInstance ();
-
-        cout << se->getCurrentFullPath () << endl;
-        std::string searchPath(se->getCurrentFullPath ());
-        searchPath += string("/Asset/script");
-        se->addSearchPath ( searchPath.c_str () );
-        se->addSearchPath ("http://127.0.0.1:8989/");
-
-        se->executeString ("require('gamemain')");
-
-        return 0;
-    }, arg );
-}
-
-TESTCASE_END
-
-#endif // ENABLE_TESTCASE
 
 
