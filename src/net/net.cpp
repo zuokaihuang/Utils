@@ -12,6 +12,15 @@
 #include <iostream>
 using namespace std;
 
+static int
+unix_read(int  fd, void*  buff, int  len)
+{
+    int  ret;
+    do { ret = read(fd, buff, len); } while (ret < 0 && errno == EINTR);
+    return ret;
+}
+
+
 Socket::Socket(Socket_type type){
     this->m_type = type;
     this->m_last_remote_ip = nullptr;
