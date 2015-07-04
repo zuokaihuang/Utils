@@ -59,7 +59,7 @@ void DebugLogToFileClose();
 #endif
 
 #ifndef DAssert
-#define DAssert(cond, msg) { if( !(cond) ){ ELog(msg); assert(! (cond) && msg); } }
+#define DAssert(cond, msg) { if( (cond) ){ ELog(msg); assert(! (cond) && msg); } }
 #endif
 
 #endif // DEBUG_H
