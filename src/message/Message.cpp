@@ -13,7 +13,7 @@ Message::~Message()
 }
 
 void Message::post (u_int32_t ms){
-    DAssert( m_MessageLooper!= NULL, "MessageLooper is nullptr");
+    DAssert( m_MessageLooper == NULL, "MessageLooper is nullptr");
     this->when = ms + GetNowUs();
     m_MessageLooper->post (this);
 }

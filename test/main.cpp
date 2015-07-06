@@ -31,7 +31,8 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("GameScriptEngine");
 //    testcase.runTestCase ("LRU");
 //    testcase.runTestCase ("Net");
-    testcase.runTestCase ("message");
+//    testcase.runTestCase ("message");
+    testcase.runTestCase ("md5");
 
 
 
