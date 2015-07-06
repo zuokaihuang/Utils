@@ -29,14 +29,12 @@ void GameScriptEngine::init (){
         auto env = se->getLuaState ();
         assert ( !(env != state) && "Lua state error!" );
 
-//        LuaDumpStack(env);
-
-        //        auto args_cnt = LuaCheckParamCount(state);
-        //        if ( args_cnt != 2) {
-        //            cout << "arg num error" << endl;
-        //            lua_pushnil (state);
-        //            return 1;
-        //        }
+//        auto args_cnt = LuaCheckParamCount(state);
+//        if ( args_cnt != 2) {
+//            cout << "arg num error:" << args_cnt << endl;
+//            lua_pushnil (state);
+//            return 1;
+//        }
 
         const char* path = NULL;
         path = !lua_isstring (state, 1) ? NULL : luaL_checkstring( state, 1);
@@ -52,33 +50,22 @@ void GameScriptEngine::init (){
             lua_pushnil (state);
             return 1;
         }
-//cout << "-=--=-=-=-=-=-=-=-=-=-]" << endl;
-//        LuaDumpTable (env, 2);
+
+
         const char* key = "onSucess";
         int rs = 0;
 
         lua_getfield ( state, 2, key);
-//        rs = lua_pcall(env, 0, 1, 0);
-//        cout << "rs " << rs << endl;
 
         lua_pop(env, 1); // 还原stack, 因为 lua_getfield
 
-//        LuaDumpStack(env);
-
         //      第四个参数的table
         lua_getfield ( state, 4, key);
-//        cout << "--------------------------.==> " << lua_typename ( state, lua_type(state, 2) ) << endl;
         rs = lua_pcall(env, 0, 1, 0);
         cout << "rs " << rs << endl;
 
         lua_pop(env, 1); // 还原stack, 因为 lua_getfield
 
-//        LuaDumpStack(env);
-
-//        // dump table
-//        LuaDumpTable (env, 4);
-
-//        LuaDumpStack(env);
         const size_t buffer_size = 512;
         char buffer[buffer_size];
         memset(buffer, 0, buffer_size);
@@ -92,8 +79,8 @@ void GameScriptEngine::init (){
             if ( full_path.size () != 0){
                 cout << "Found" << full_path << endl;
             }else{
-                cout << "Not Found, try in web" << full_path << endl;
-                full_path = am->getFileFullWebPath (abs_path);
+                cout << "Not found in Local, try in web" << full_path << endl;
+                string full_path = am->getFileFullWebPath (abs_path);
                 if (full_path.size () > 0){
                     cout << "Found in web:" << full_path << endl;
                     string local_path = am->getWebFile (full_path, false, "_prequire_");

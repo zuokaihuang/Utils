@@ -10,11 +10,19 @@ local tb = {
                 print("oh no onError");
             end
 }
-local rs = prequire( "gamewalker", tb , function() print('oh no!') end, {onSucess=function() print('fake'); end})
-print('rs =>', rs)
-print('tb size --->', #tb)
+
+function load_local()
+    local rs = prequire( "gamewalker", tb , function() print('oh no!') end, {onSucess=function() print('fake'); end})
+    print('rs =>', rs)
+    print('tb size --->', #tb)
+end
 
 
-local rs = prequire( "webgamewalker", tb , function() print('oh no!') end, {onSucess=function() print('fake'); end})
-print('rs =>', rs)
-print('tb size --->', #tb)
+function load_web()
+    local rs = prequire( "webgamewalker", tb , function() print('oh no!') end, {onSucess=function() print('fake'); end})
+    print('rs =>', rs)
+    print('tb size --->', #tb)
+end
+
+load_local()
+load_web()

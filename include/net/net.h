@@ -3,19 +3,6 @@
 
 #include <unistd.h>
 
-#ifndef DLog
-#define DLog( ... ) { fprintf( stdout, __VA_ARGS__ ); printf("\n"); fflush(stdout); }
-#endif
-
-#ifndef ELog
-#define ELog( ... ) { fprintf( stderr, __VA_ARGS__ ); printf("\n");fflush(stderr); }
-#endif
-
-#ifndef DAssert
-#define DAssert(cond, msg) { if(!cond){ ELog("%s", msg); assert( !cond && msg); } }
-#endif
-
-
 class  Socket{
 public:
     enum Socket_type{

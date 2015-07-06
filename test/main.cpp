@@ -28,11 +28,11 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("HttpC");
 //    testcase.runTestCase ("ScriptEngine");
 //    testcase.runTestCase ("AssetManager");
-//    testcase.runTestCase ("GameScriptEngine");
+    testcase.runTestCase ("GameScriptEngine");
 //    testcase.runTestCase ("LRU");
 //    testcase.runTestCase ("Net");
 //    testcase.runTestCase ("message");
-    testcase.runTestCase ("md5");
+//    testcase.runTestCase ("md5");
 
 
 

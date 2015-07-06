@@ -16,7 +16,7 @@ char* MD5Helper::md5 (const char *in){
     MD5Final (&mdContext);
 
     const size_t size = 32;
-    char* buffer = (char*) malloc(size);
+    char* buffer = new char[32];
     for (int i = 0; i < 16; i++)
         snprintf (buffer+i*2, size, "%02x", mdContext.digest[i]);
 

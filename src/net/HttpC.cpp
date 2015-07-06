@@ -5,7 +5,7 @@
 #include <assert.h>
 #include <string.h>
 #include <fcntl.h>
-
+#include <debug/Debug.h>
 
 HttpC::HttpC()
 {

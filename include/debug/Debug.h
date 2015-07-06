@@ -58,6 +58,7 @@ void DebugLogToFileClose();
 #define FLog(...) _FLog(DebugGetOutPutLogFile(), __VA_ARGS__)
 #endif
 
+#include <assert.h>
 #ifndef DAssert
 #define DAssert(cond, msg) { if( (cond) ){ ELog(msg); assert(! (cond) && msg); } }
 #endif

@@ -230,12 +230,12 @@ static int test_md5 (){
 
 //    printf (" \"%s\"\n\n", inString);
 
-//    MDTestSuite();
+    MDTestSuite();
 
     char* md5 = MD5Helper::md5 ("admin");
-    if (md5){
+    if ( md5 ){
         cout << md5 << endl;
-        free(md5);
+        delete md5;
     }else{
         cout << "md5 nullptr" << endl;
     }

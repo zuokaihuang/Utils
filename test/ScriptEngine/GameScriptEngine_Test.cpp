@@ -19,6 +19,7 @@ static int test_GameScriptEngine(){
     se->addSearchPath ("http://127.0.0.1:8989/");
 
     se->executeString ("require('gamemain')");
+    se->executeString ("load_web()"); // load 第二次时不用重新去网络取数据
 
     return 0;
 }

@@ -209,13 +209,13 @@ void URI::dump (){
 }
 
 bool URI::isHttp(){
-    if (strstr(schema, "http")){
+    if (schema != nullptr && strstr(schema, "http") != 0 ){
         return true;
     }
     return false;
 }
 bool URI::isFile (){
-    if (strstr(schema, "file")){
+    if (schema != nullptr && strstr(schema, "file") != 0 ){
         return true;
     }
     return false;

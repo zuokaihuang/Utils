@@ -8,7 +8,7 @@
 #include <netdb.h>
 #include <arpa/inet.h>
 
-
+#include <debug/Debug.h>
 #include <iostream>
 using namespace std;
 
@@ -44,7 +44,6 @@ void Socket::create (){
     }else{
         m_master_Socket = -1;
     }
-    DLog("master socket:%d\b", m_master_Socket);
 }
 
 void Socket::close (){
