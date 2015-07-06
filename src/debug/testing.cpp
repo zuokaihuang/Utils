@@ -36,7 +36,7 @@ void TestCase::runTestCase (string name){
     if (item != mTestFunctions.end ()){
         TestItem* i = item->second;
         i->func();
-        DLog("Normal");
+
     }else{
         cout << "TestCase not found [" << name << "]" << endl;
         void* handle = dlopen (NULL, RTLD_LAZY);

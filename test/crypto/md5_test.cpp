@@ -100,7 +100,7 @@ static void MDTimeTrial ()
    Prints out message digest, a space, the string (in quotes) and a
    carriage return.
  */
-static void MDString ( char *inString)
+static void MDString (const char *inString)
 
 {
   MD5_CTX mdContext;
@@ -117,7 +117,7 @@ static void MDString ( char *inString)
    Prints out message digest, a space, the file name, and a carriage
    return.
  */
-static void MDFile (char *filename)
+static void MDFile ( const char *filename)
 
 {
   FILE *inFile = fopen (filename, "rb");
@@ -208,6 +208,8 @@ int md5_main (int argc, char **argv)
  ******************************* (cut) ********************************
  */
 
+#include <crypto/md5helper.h>
+
 #ifdef ENABLE_TESTCASE
 
 #include "debug/testing.h"
@@ -228,8 +230,15 @@ static int test_md5 (){
 
 //    printf (" \"%s\"\n\n", inString);
 
-    MDTestSuite();
+//    MDTestSuite();
 
+    char* md5 = MD5Helper::md5 ("admin");
+    if (md5){
+        cout << md5 << endl;
+        free(md5);
+    }else{
+        cout << "md5 nullptr" << endl;
+    }
     return 0;
 }
 
