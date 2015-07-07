@@ -19,7 +19,13 @@ unix_read(int  fd, void*  buff, int  len)
     do { ret = read(fd, buff, len); } while (ret < 0 && errno == EINTR);
     return ret;
 }
-
+static int
+unix_write(int  fd, const void*  buff, int  len)
+{
+    int  ret;
+    do { ret = write(fd, buff, len); } while (ret < 0 && errno == EINTR);
+    return ret;
+}
 
 Socket::Socket(Socket_type type){
     this->m_type = type;
