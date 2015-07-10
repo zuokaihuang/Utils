@@ -1,6 +1,6 @@
 #include "message/Message.h"
 #include <message/MessageLooper.h>
-#include <chrono>
+#include <time/time.h>
 
 Message::Message(MessageLooper *Looper)
 {
@@ -14,11 +14,7 @@ Message::~Message()
 
 void Message::post (u_int32_t ms){
     DAssert( m_MessageLooper == NULL, "MessageLooper is nullptr");
-    this->when = ms + GetNowUs();
+    DAssert ( handleFunction == NULL && handler == NULL ,"Message handler and handle function both nullptr" );
+    this->whenUs = ms*1000 + GetNowUs();
     m_MessageLooper->post (this);
-}
-
-uint64_t GetNowUs (){
-    uint64_t now = std::chrono::system_clock::now ().time_since_epoch ().count ();
-    return now;
 }

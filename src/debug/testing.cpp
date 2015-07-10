@@ -32,6 +32,8 @@ void TestCase::runAllTestCase(){
 }
 
 void TestCase::runTestCase (string name){
+    DLog("TestCase start [", name ,"]\n");
+    auto start = GetNowMs ();
     auto item = mTestFunctions.find (name);
     if (item != mTestFunctions.end ()){
         TestItem* i = item->second;
@@ -46,7 +48,7 @@ void TestCase::runTestCase (string name){
         }
         char buffer[512];
         snprintf(buffer, 512, "tc%s", name.c_str ());
-DLog("dlopen");
+        DLog("dlopen");
         typedef void(*Fptr)(void*);
         Fptr fptr = (Fptr)dlsym (handle, buffer);
         DLog( (void*)fptr );
@@ -55,6 +57,7 @@ DLog("dlopen");
             fptr( NULL );
         }
     }
+    DLog("\nTestCase end [", name ,"], Total Time :", (GetNowMs () - start) , "ms\n" );
 }
 
 void TestCase::dump (){

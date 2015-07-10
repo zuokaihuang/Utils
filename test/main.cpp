@@ -11,7 +11,7 @@ using namespace std;
 
 int main(int argc, char *argv[])
 {
-    clock_t start = clock ();
+    auto start = GetNowMs ();
     TestCase& testcase = Sigleton<TestCase>();
 //   testcase.dump ();
 
@@ -28,17 +28,14 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("HttpC");
 //    testcase.runTestCase ("ScriptEngine");
 //    testcase.runTestCase ("AssetManager");
-    testcase.runTestCase ("GameScriptEngine");
+//    testcase.runTestCase ("GameScriptEngine");
 //    testcase.runTestCase ("LRU");
 //    testcase.runTestCase ("Net");
 //    testcase.runTestCase ("message");
 //    testcase.runTestCase ("md5");
+    testcase.runTestCase ("MessageLooper");
 
-
-
-    clock_t end = clock();
-
-    cout << "\n\nTotal Time:" << end - start << " ms" << endl;
+    cout << "\n\nTotal Time:" << GetNowMs() - start << " ms" << endl;
     cout << "All Done." << endl;
     return 0;
 }

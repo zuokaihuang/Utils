@@ -7,6 +7,8 @@
 
 #include <debug/Debug.h>
 #include "scope/Sigleton.h"
+#include <time/time.h>
+
 typedef std::function<void()> TestCaseEntryFunction;
 struct TestCaseEntry{
     TestCaseEntry(TestCaseEntryFunction func){
