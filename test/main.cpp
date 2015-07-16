@@ -33,7 +33,8 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("Net");
 //    testcase.runTestCase ("message");
 //    testcase.runTestCase ("md5");
-    testcase.runTestCase ("MessageLooper");
+//    testcase.runTestCase ("MessageLooper");
+    testcase.runTestCase ("MemBuffer");
 
     cout << "\n\nTotal Time:" << GetNowMs() - start << " ms" << endl;
     cout << "All Done." << endl;

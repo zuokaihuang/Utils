@@ -42,7 +42,7 @@ static int test_MessageLooper(){
     msg3->handleFunction = handle_func;
     msg3->post (5000);
 
-//    std::this_thread::sleep_for (std::chrono::milliseconds(200));
+    std::this_thread::sleep_for (std::chrono::milliseconds(200));
 
     looper->drain ();
 

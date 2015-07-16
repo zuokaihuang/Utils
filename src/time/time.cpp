@@ -12,7 +12,3 @@ uint64_t GetNowMs (){
     return now/1000;
 }
 
-
-
-
-
