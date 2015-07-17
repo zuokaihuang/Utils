@@ -28,7 +28,7 @@ static int test_net (){
 
     Socket* tcp_remote_handler = socket_tcp_server.accept ();
     memset (buffer, 0, buffer_size);
-    rs = socket_tcp_server.recv (tcp_remote_handler, buffer, buffer_size);
+    rs = tcp_remote_handler->recv ( buffer, buffer_size);
     cout << "tcp server recv:" << buffer << "," << rs << endl;
     remote_ip = socket_tcp_server.remote_ip ();
     remote_port=socket_tcp_server.remote_port ();
@@ -37,7 +37,7 @@ static int test_net (){
     tcp_remote_handler->send ("world", 5);
 
     memset (buffer, 0, buffer_size);
-    rs = socket_tcp_client.recv (&socket_tcp_client, buffer, buffer_size);
+    rs = socket_tcp_client.recv ( buffer, buffer_size);
     cout << "tcp client recv:" << buffer << "," << rs << endl;
 
     tcp_remote_handler->close ();
@@ -86,6 +86,57 @@ static int test_net (){
 
     broadcast_client.close ();
     broadcast_server1.close ();
+
+    // test data available
+    {
+        cout << "================" << endl;
+        // tcp
+        memset (buffer, 0, buffer_size);
+
+        Socket socket_tcp_server(Socket::Socket_tcp);
+        socket_tcp_server.bind (9090);
+
+        Socket socket_tcp_client(Socket::Socket_tcp);
+        socket_tcp_client.connect ("127.0.0.1", 9090);
+
+        Socket* tcp_remote_handler = nullptr;
+        tcp_remote_handler = socket_tcp_server.accept ();
+
+        if (tcp_remote_handler->isDataAvailable ( 1000 )){
+            cout << "data ok" << endl;
+            rs = tcp_remote_handler->recv ( buffer, buffer_size);
+            cout << "tcp server recv:" << buffer << "," << rs << endl;
+            remote_ip = socket_tcp_server.remote_ip ();
+            remote_port=socket_tcp_server.remote_port ();
+            cout << "!!! tcp server:" << remote_ip << "," << remote_port << endl;
+        }else{
+            cout << "data not ok" << endl;
+        }
+
+        socket_tcp_client.send ("hello", 5);
+        if (tcp_remote_handler->isDataAvailable ( 1000 )){
+            cout << "data ok" << endl;
+            rs = tcp_remote_handler->recv ( buffer, buffer_size);
+            cout << "tcp server recv:" << buffer << "," << rs << endl;
+            remote_ip = socket_tcp_server.remote_ip ();
+            remote_port=socket_tcp_server.remote_port ();
+            cout << "!!! tcp server:" << remote_ip << "," << remote_port << endl;
+        }else{
+            cout << "data not ok" << endl;
+        }
+
+
+        tcp_remote_handler->send ("world", 5);
+
+        memset (buffer, 0, buffer_size);
+        rs = socket_tcp_client.recv ( buffer, buffer_size);
+        cout << "tcp client recv:" << buffer << "," << rs << endl;
+
+        tcp_remote_handler->close ();
+        delete tcp_remote_handler;
+        socket_tcp_client.close ();
+        socket_tcp_server.close ();
+    }
 
     return 0;
 }

@@ -1,5 +1,5 @@
-#include <crypto/md5helper.h>
-#include <crypto/md5.h>
+#include <hash/md5helper.h>
+#include <hash/md5.h>
 #include <string.h>
 #include <stdlib.h>
 #include <stdio.h>

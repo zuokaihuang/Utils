@@ -30,11 +30,11 @@ int main(int argc, char *argv[])
 //    testcase.runTestCase ("AssetManager");
 //    testcase.runTestCase ("GameScriptEngine");
 //    testcase.runTestCase ("LRU");
-//    testcase.runTestCase ("Net");
+    testcase.runTestCase ("net");
 //    testcase.runTestCase ("message");
 //    testcase.runTestCase ("md5");
 //    testcase.runTestCase ("MessageLooper");
-    testcase.runTestCase ("MemBuffer");
+//    testcase.runTestCase ("MemBuffer");
 
     cout << "\n\nTotal Time:" << GetNowMs() - start << " ms" << endl;
     cout << "All Done." << endl;

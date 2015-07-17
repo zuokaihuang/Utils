@@ -34,7 +34,7 @@
 /* -- include the following line if the md5.h header file is separate -- */
 /* #include "md5.h" */
 
-#include <crypto/md5.h>
+#include <hash/md5.h>
 
 /* forward declaration */
 static void Transform (UINT4 *buf,UINT4 *in);

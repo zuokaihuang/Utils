@@ -19,9 +19,12 @@ private:
 public:
     int bind(const int port);
     int connect(const char *ip, const int port); // only tcp
+
+    bool isDataAvailable(unsigned int iTimeout);
+
     Socket* accept();
     int send(const void* buffer, const size_t size);
-    ssize_t recv(const Socket *Socket, void* buffer, const size_t size);
+    ssize_t recv(void* buffer, const size_t size);
 
     int sendto(const char* ip, const int port, const void* buffer, const size_t size); // only udp
     ssize_t recvfrom(void* buffer, const size_t size);
@@ -33,7 +36,7 @@ public:
     int broadcast(const int port, const void* buffer, const size_t size);
     ssize_t recvbroadcast(void* buffer, const size_t size);
 
-    int m_master_Socket;
+    int m_master_socket;
     Socket_type m_type;
 
 private:

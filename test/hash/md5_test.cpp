@@ -28,7 +28,7 @@
 #include <string.h>
 /* -- include the following file if the file md5.h is separate -- */
 /* #include "md5.h" */
-#include <crypto/md5.h>
+#include <hash/md5.h>
 
 /* Prints message digest buffer in mdContext as 32 hexadecimal digits.
    Order is from low-order byte to high-order byte of digest.
@@ -208,7 +208,7 @@ int md5_main (int argc, char **argv)
  ******************************* (cut) ********************************
  */
 
-#include <crypto/md5helper.h>
+#include <hash/md5helper.h>
 
 #ifdef ENABLE_TESTCASE
 

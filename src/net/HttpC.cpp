@@ -69,7 +69,7 @@ int HttpC::head (std::string& url){
 
     char *buffer = new char[m_httpOnReadSize];
 
-    while ((rs = m_pSocket->recv (m_pSocket, buffer, m_httpOnReadSize)) > 0) {
+    while ((rs = m_pSocket->recv ( buffer, m_httpOnReadSize)) > 0) {
         onRead(buffer, rs);
         memset (buffer, 0x0, m_httpOnReadSize);
     }
@@ -118,7 +118,7 @@ int HttpC::get (std::string& url){
 
     char *buffer = new char[m_httpOnReadSize];
 
-    while ((rs = m_pSocket->recv (m_pSocket, buffer, m_httpOnReadSize)) > 0) {
+    while ((rs = m_pSocket->recv (buffer, m_httpOnReadSize)) > 0) {
         onRead(buffer, rs);
         memset (buffer, 0x0, m_httpOnReadSize);
     }

@@ -3,7 +3,7 @@ using namespace std;
 #include <iostream>
 #include <unistd.h>
 
-#include <crypto/MD5Helper.h>
+#include <hash/MD5Helper.h>
 #include <debug/Debug.h>
 
 AssetManager::AssetManager(){

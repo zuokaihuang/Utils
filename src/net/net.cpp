@@ -40,23 +40,23 @@ Socket::~Socket(){
 
 void Socket::create (){
     if (m_type == Socket_udp){
-        if ((m_master_Socket = ::socket(AF_INET, SOCK_DGRAM, 0)) == -1){
+        if ((m_master_socket = ::socket(AF_INET, SOCK_DGRAM, 0)) == -1){
             DLog("Socket error\n");
         }
     } else if ( m_type == Socket_tcp ){
-        if ((m_master_Socket = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
+        if ((m_master_socket = ::socket(AF_INET, SOCK_STREAM, 0)) == -1){
             DLog("Socket error\n");
         }
     }else{
-        m_master_Socket = -1;
+        m_master_socket = -1;
     }
 }
 
 void Socket::close (){
-    if (m_master_Socket != -1){
-        ::close(m_master_Socket);
+    if (m_master_socket != -1){
+        ::close(m_master_socket);
     }
-    m_master_Socket = -1;
+    m_master_socket = -1;
 
     if (m_last_remote_ip) free(m_last_remote_ip);
     m_last_remote_ip = nullptr;
@@ -75,17 +75,15 @@ int Socket::bind (const int port){
     address.sin_port   = htons(port);
     address.sin_addr.s_addr = htonl(INADDR_ANY);
 
-    if ( setsockopt (m_master_Socket, SOL_SOCKET, SO_REUSEADDR, (char*)&opt, sizeof(opt)) < 0){
-        ELog("[%s +%d]setsockopt:(%d)%s\n", __FILE__, __LINE__, m_master_Socket, strerror (errno));
-        return -1;
+    if ( setsockopt (m_master_socket, SOL_SOCKET, SO_REUSEADDR, (char*)&opt, sizeof(opt)) < 0){
+//        ELog("[%s +%d]setsockopt:(%d)%s\n", __FILE__, __LINE__, m_master_socket, strerror (errno), m_master_socket; return -1));
     }
 
-    if (::bind(m_master_Socket, (struct sockaddr*)&address, socklen ) == -1){
-        ELog("[%s +%d]bind error:(%d)%s\n", __FILE__, __LINE__, m_master_Socket, strerror (errno));
-        return -1;
+    if (::bind(m_master_socket, (struct sockaddr*)&address, socklen ) == -1){
+//        ELog("[%s +%d]bind error:(%d)%s\n", __FILE__, __LINE__, m_master_socket, strerror (errno); return -1));
     }
 
-    if (m_type == Socket_tcp && listen (m_master_Socket, 10) < 0){
+    if (m_type == Socket_tcp && listen (m_master_socket, 10) < 0){
         ELog("listen:%s\n", strerror (errno) );
         return -1;
     }
@@ -103,11 +101,34 @@ int Socket::connect (const char *ip, const int port){
     remote.sin_family = AF_INET;
     remote.sin_port   = htons(port);
     remote.sin_addr.s_addr = inet_addr(ip);
-    if(::connect(m_master_Socket, (struct sockaddr *)&remote, socklen) < 0){
+    if(::connect(m_master_socket, (struct sockaddr *)&remote, socklen) < 0){
         ELog("connect:%s\n", strerror (errno));
         return -1;
     }
     return 0;
+}
+
+bool Socket::isDataAvailable (unsigned int iTimeout){
+    if (m_master_socket == 0){
+        return false;
+    }
+
+    struct timeval tv;
+    fd_set fds;
+    FD_ZERO(&fds);
+    FD_SET(m_master_socket, &fds);
+
+    if (iTimeout!=0){
+        tv.tv_sec = iTimeout / 1000;
+        tv.tv_usec = iTimeout%1000;
+    }
+    int rs = select (m_master_socket + 1, &fds, NULL, NULL, &tv);
+
+    if (rs <= 0){
+        return false;
+    }else{
+        return true;
+    }
 }
 
 Socket* Socket::accept (){
@@ -116,7 +137,7 @@ Socket* Socket::accept (){
 
     memset(&remote, 0, socklen);
     int socket;
-    if ((socket = ::accept (m_master_Socket, (struct sockaddr*)&remote, (socklen_t*)&socklen )) < 0){
+    if ((socket = ::accept (m_master_socket, (struct sockaddr*)&remote, (socklen_t*)&socklen )) < 0){
         DLog("accept:%s\n", strerror (errno) );
         return NULL;
     }
@@ -126,12 +147,12 @@ Socket* Socket::accept (){
 
     Socket* new_Socket = new Socket(Socket_tcp);
     new_Socket->close (); // no need this
-    new_Socket->m_master_Socket = socket;
+    new_Socket->m_master_socket = socket;
     return new_Socket;
 }
 
 int Socket::send (const void *buffer, const size_t size){
-    return ::send(m_master_Socket, buffer, size, 0);
+    return ::send(m_master_socket, buffer, size, 0);
 }
 
 int Socket::sendto(const char *ip, const int port, const void *buffer, const size_t size){
@@ -145,11 +166,11 @@ int Socket::sendto(const char *ip, const int port, const void *buffer, const siz
     if ( inet_aton(ip, &remote.sin_addr) == 0){
         DLog("inet_aton\n");
     }
-    return ::sendto(m_master_Socket, buffer, size, 0, (struct sockaddr*)&remote, socklen );
+    return ::sendto(m_master_socket, buffer, size, 0, (struct sockaddr*)&remote, socklen );
 }
 
-ssize_t Socket::recv ( const Socket* Socket, void *buffer, const size_t size){
-    return ::recv( Socket->m_master_Socket, buffer, size, 0);
+ssize_t Socket::recv (void *buffer, const size_t size){
+    return ::recv( m_master_socket, buffer, size, 0);
 }
 
 ssize_t Socket::recvfrom (void *buffer, const size_t size){
@@ -157,7 +178,7 @@ ssize_t Socket::recvfrom (void *buffer, const size_t size){
     struct sockaddr_in remote;
 
     memset(&remote, 0, socklen);
-    int rs = ::recvfrom(m_master_Socket, buffer, size, 0, (struct sockaddr*)&remote, &socklen);
+    int rs = ::recvfrom(m_master_socket, buffer, size, 0, (struct sockaddr*)&remote, &socklen);
 
     m_last_remote_ip = strdup( inet_ntoa (remote.sin_addr) );
     m_last_remote_port=ntohs(remote.sin_port);
@@ -179,7 +200,7 @@ int Socket::bind_broadcast(const int port){
 int Socket::broadcast (const int port, const void *buffer, const size_t size){
     const int opt = 1;
     int rs;
-    rs = setsockopt(m_master_Socket, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt));
+    rs = setsockopt(m_master_socket, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt));
     if ( rs == -1){
         ELog("setsock opt:%s\n", strerror (errno));
         return -1;
@@ -194,13 +215,13 @@ int Socket::broadcast (const int port, const void *buffer, const size_t size){
     remote.sin_addr.s_addr = htonl(INADDR_BROADCAST);
 
 
-    return ::sendto (m_master_Socket, buffer, size, 0, (struct sockaddr*)&remote, socklen);
+    return ::sendto (m_master_socket, buffer, size, 0, (struct sockaddr*)&remote, socklen);
 }
 
 ssize_t Socket::recvbroadcast (void *buffer, const size_t size){
     const int opt = 1;
     int rs;
-    rs = setsockopt(m_master_Socket, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt));
+    rs = setsockopt(m_master_socket, SOL_SOCKET, SO_BROADCAST, (char *)&opt, sizeof(opt));
     if ( rs == -1){
         ELog("setsock opt:%s\n", strerror (errno));
         return -1;
